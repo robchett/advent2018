@@ -1,4 +1,14 @@
 Object.prototype.uniq = function() { 
+	var out = [];
+	for(i in this) {
+		if (this.hasOwnProperty(i) && out.indexOf(this[i]) == -1) {
+			out.push(this[i])
+		}
+	}
+	return out;
+}
+
+Object.prototype.uniqc = function() { 
 	var out = {};
 	for(i in this) {
 		if (this.hasOwnProperty(i)) {

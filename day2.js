@@ -6,8 +6,8 @@ function part1(input) {
 	var initial = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
 	var res = input
 		.map(v => v.split(""))
-		.map(v => v.uniq())
-		.map(v => v.uniq())
+		.map(v => v.uniqc())
+		.map(v => v.uniqc())
 		.reduce((a, v) => {Object.keys(v).forEach(k => a[k]++); return a}, initial);
 	return res[2] * res[3];
 }
