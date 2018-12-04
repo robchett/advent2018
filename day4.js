@@ -12,17 +12,14 @@ function grid(input) {
 		.map(i => ({y: parseInt(i[1]), m:parseInt(i[2]), d:parseInt(i[3]), h:parseInt(i[4]), i:parseInt(i[5]), id:parseInt(i[6]), t:i[7]}) )
 		// Group data by Guard #
 		.reduce((a, c) => {
-			c.id = c.id || prev;
-			prev = c.id;
+			prev = c.id = c.id || prev;
 			a[c.id] = a[c.id] || [];
 			a[c.id].push(c);
 			return a;
 		}, {})
 		// Generate sleep map, most slept minutes (value + index) and total slept minutes
 		.map((_, guard) => {
-			var out = {sleeps: Array(60).fill(0), total: 0, id: _, max: 0, maxI: 0};
-			var sleep;
-			out.sleeps = Array(60).fill(0);
+			var out = {sleeps: Array(60).fill(0), total: 0, id: _, max: 0, maxI: 0}, sleep;
 			guard.map((action) => {
 				switch(action.t) {
 					case 'falls asleep': {
@@ -33,11 +30,11 @@ function grid(input) {
 						for(i = sleep; i < action.i; i++) {
 							out.sleeps[i]++;
 						}
-						out.total += action.i - sleep;
 						break;
 					}
 				}
 			})
+			out.total = out.sleeps.reduce((a,c) => a + c, 0)
 			out.max = Math.max(...out.sleeps);
 			out.maxI = out.sleeps.indexOf(out.max);
 			return out;
@@ -62,8 +59,6 @@ function part2(input) {
 
 	return guard.id * guard.maxI
 }
-
-
 
 advent.test(part1, ["[1518-11-01 00:00] Guard #10 begins shift", "[1518-11-01 00:05] falls asleep", "[1518-11-01 00:25] wakes up", "[1518-11-01 00:30] falls asleep", "[1518-11-01 00:55] wakes up", "[1518-11-01 23:58] Guard #99 begins shift", "[1518-11-02 00:40] falls asleep", "[1518-11-02 00:50] wakes up", "[1518-11-03 00:05] Guard #10 begins shift", "[1518-11-03 00:24] falls asleep", "[1518-11-03 00:29] wakes up", "[1518-11-04 00:02] Guard #99 begins shift", "[1518-11-04 00:36] falls asleep", "[1518-11-04 00:46] wakes up", "[1518-11-05 00:03] Guard #99 begins shift", "[1518-11-05 00:45] falls asleep", "[1518-11-05 00:55] wakes up", ], 240);
 advent.run(part1, input);
