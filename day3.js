@@ -15,7 +15,6 @@ function grid(input) {
 				}
 			}
 			return a;
-
 		}, [])
 }
 

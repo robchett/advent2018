@@ -18,6 +18,10 @@ Object.prototype.uniqc = function() {
 	return out;
 }
 
+Array.prototype.index = function(i) {
+	return this[i];
+}
+
 Object.prototype._l = function() {
 	console.log(this);
 	return this;
@@ -31,6 +35,10 @@ Object.prototype.map = function (callback) {
 		}
 	}
 	return out
+}
+
+Object.prototype.toArray = function() {
+	return Object.values(this);
 }
 
 
