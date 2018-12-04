@@ -4,59 +4,42 @@ const input = ["[1518-05-08 00:12] falls asleep", "[1518-09-09 00:04] Guard #154
 
 function grid(input) {
 	return input
+		// Sort the list so they are date ordered
 		.sort()
+		// Regex out the data
 		.map(i => i.match(/\[(\d+)-(\d+)-(\d+) (\d+):(\d+)\] Guard #(\d+) (.*)/) || i.match(/\[(\d+)-(\d+)-(\d+) (\d+):(\d+)\]() (.*)/) )
+		// Convert out data into useable objects
 		.map(i => ({y: parseInt(i[1]), m:parseInt(i[2]), d:parseInt(i[3]), h:parseInt(i[4]), i:parseInt(i[5]), id:parseInt(i[6]), t:i[7]}) )
+		// Group data by Guard #
 		.reduce((a, c) => {
 			c.id = c.id || prev;
 			prev = c.id;
-			a[c.id] = a[c.id] || {};
-			if (c.h > 1) {
-				c.d++
-				c.h = 0;
-			}
-			if (
-				(c.d == 32 && [1,3,5,7,8,10,12].indexOf(c.m)) || 
-				(c.d == 31 && [4,6,9,11].indexOf(c.m)) || 
-				(c.d == 28 && c.m == 2 && c.y % 4 != 0) || 
-				(c.d == 27 && c.m == 2 && c.y % 4 == 0)
-			) {
-				c.m++;
-				c.d = 1;
-			}
-			if (c.m == 13) {
-				c.y++;
-				c.m = 1;
-			}
-			a[c.id][c.y + c.m + c.d] = a[c.id][c.y + c.m + c.d] || [];
-			a[c.id][c.y + c.m + c.d].push(c);
+			a[c.id] = a[c.id] || [];
+			a[c.id].push(c);
 			return a;
 		}, {})
+		// Generate sleep map, most slept minutes (value + index) and total slept minutes
 		.map((_, guard) => {
 			var out = {sleeps: Array(60).fill(0), total: 0, id: _, max: 0, maxI: 0};
 			var sleep;
 			out.sleeps = Array(60).fill(0);
-			guard.map((__,day) => {
-				day.map((action) => {
-					switch(action.t) {
-						case 'falls asleep': {
-							sleep = action.i;
-							break;
-						}
-						case 'wakes up': {
-							for(i = sleep; i < action.i; i++) {
-								out.sleeps[i]++;
-								if (out.sleeps[i] > out.max) {
-									out.maxI = i;
-									out.max = out.sleeps[i];
-								}
-							}
-							out.total += action.i - sleep;
-							break;
-						}
+			guard.map((action) => {
+				switch(action.t) {
+					case 'falls asleep': {
+						sleep = action.i;
+						break;
 					}
-				})
-			});
+					case 'wakes up': {
+						for(i = sleep; i < action.i; i++) {
+							out.sleeps[i]++;
+						}
+						out.total += action.i - sleep;
+						break;
+					}
+				}
+			})
+			out.max = Math.max(...out.sleeps);
+			out.maxI = out.sleeps.indexOf(out.max);
 			return out;
 		})
 		.toArray();
