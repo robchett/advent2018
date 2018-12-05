@@ -6,7 +6,7 @@ const input = "yZzYilLqQqBbQkKofFOXxjLLllCUuYyVrRvYycJeXtjJZWwzlLTxOmZzMhHowWlLC
 function part1(input) {
 	return input
 		.split("")
-		.reduce((a,c) => (a.codePointAt(a.length -1) == c.codePointAt(0) + 32 || a.codePointAt(a.length -1) == c.codePointAt(0) - 32 ? a.substring(0, a.length -1) : a + c ))
+		.reduce((a,c) => (Math.abs(a.codePointAt(a.length -1) - c.codePointAt(0)) == 32 ? a.substring(0, a.length -1) : a + c ))
 		.length;
 }
 
@@ -16,14 +16,12 @@ function part2(input) {
 		.split("")
 		.uniq()
 		.reduce((a,c) => {
-			var base = (c.codePointAt(0) - 65) % 32;
-			var lower = String.fromCodePoint(base + 65 + 32)
-			var upper = String.fromCodePoint(base + 65)
-			a[String.fromCodePoint(base + 65)] = input.replace(new RegExp(upper + "|" + lower, 'g'), '')
+			var base = c.codePointAt(0);
+			var upper = String.fromCodePoint(base - 32)
+			a.push(input.replace(new RegExp(String.fromCodePoint(base) + "|" + upper, 'g'), ''))
 			return a;
-		}, {})
-		.map((_, a) => part1(a))
-		.toArray()
+		}, [])
+		.map((a) => part1(a))
 		.sort((a,b) => a-b)[0]
 }
 
