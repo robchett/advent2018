@@ -8,11 +8,12 @@ Object.prototype.uniq = function() {
 	return out;
 }
 
-Object.prototype.uniqc = function() { 
+Object.prototype.uniqc = function(callback) { 
 	var out = {};
 	for(i in this) {
 		if (this.hasOwnProperty(i)) {
-			out[this[i]] = out[this[i]] ? ++out[this[i]] : 1;
+			var val = callback ? callback(this[i]) : this[i];
+			out[val] = out[val] ? ++out[val] : 1;
 		}
 	}
 	return out;
@@ -36,6 +37,22 @@ Object.prototype.map = function (callback) {
 	}
 	return out
 }
+
+
+Object.prototype.filter = function (callback) {
+	var out = {};
+	for(i in this) {
+		if (this.hasOwnProperty(i) && callback(i, this[i])) {
+			out[i] = this[i];
+		}
+	}
+	return out
+}
+
+Object.prototype.keys = function (callback) {	
+	return Object.keys(this);
+}
+
 
 Object.prototype.toArray = function() {
 	return Object.values(this);
