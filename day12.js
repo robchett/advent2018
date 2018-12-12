@@ -3,7 +3,7 @@ const advent = require('./advent');
 const input = 9306;
 
 function part1(input, rules, generations) {
-	rules = rules.split(';').map(a => a[a.length - 1] == '#' ? a.slice(0, -5) : false).filter(a => a)._l()
+	rules = rules.split(';').map(a => a[a.length - 1] == '#' ? a.slice(0, -5) : false).filter(a => a)
 	input = input.split("").map((a, i) => ({i: i, v: a == '#'} ))
 	var min = 0,
 		max = input.length - 1;
@@ -14,16 +14,16 @@ function part1(input, rules, generations) {
 	console.log(`0: ${toString(input)}`);
 	var prev = {s: 0, t: ''};
 	for (var g = 1; g <= generations; g++) {
-		if (toString(input.slice(0, 5)) === '....#') { input.unshift({i:--min, v: false}) };
-		if (toString(input.slice(0, 4)) === '...#') { input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}) };
-		if (toString(input.slice(0, 3)) === '..#') { input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}) };
-		if (toString(input.slice(0, 2)) === '.#') { input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}) };
-		if (toString(input.slice(0, 1)) === '#') { input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}); input.unshift({i:--min, v: false}) };
-		if (toString(input.slice(-1)) === '#') { input.push({i:++max, v: false}); input.push({i:++max, v: false}); input.push({i:++max, v: false}); input.push({i:++max, v: false}); input.push({i:++max, v: false}) };
-		if (toString(input.slice(-2)) === '#.') { input.push({i:++max, v: false}); input.push({i:++max, v: false}); input.push({i:++max, v: false}); input.push({i:++max, v: false}) };
-		if (toString(input.slice(-3)) === '#..') { input.push({i:++max, v: false}); input.push({i:++max, v: false}); input.push({i:++max, v: false}) };
-		if (toString(input.slice(-4)) === '#...') { input.push({i:++max, v: false}); input.push({i:++max, v: false}) };
-		if (toString(input.slice(-5)) === '#....') { input.push({i:++max, v: false}) };
+		var b = '#';
+		for(var i = 1; i <= 5; i++) {
+			if (toString(input.slice(0, i)) == b) input.unshift({i:--min, v: false});
+			b = '.' + b;
+		}
+		b = '#'
+		for(var i = 1; i <= 5; i++) {
+			if (toString(input.slice(-i)) == b) input.push({i:++max, v: false});
+			b = b + '.';
+		}
 		var newInput = [];
 		for (var i = 2; i < input.length - 1; i++) {
 			var slice = toString(input.slice(i-2, i+3));
